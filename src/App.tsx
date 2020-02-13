@@ -89,11 +89,11 @@ export default class App extends React.Component<any, any> {
         this.setState({ mean: 'Calculation Error' });
       });
 
-      // this.calculateMode(dataSet, length).then((mode) => {
-      //   this.setState({ mode: mode });
-      // }).catch((error) => {
-      //   this.setState({ mean: 'Calculation Error' });
-      // });
+      this.calculateMode(dataSet, length).then((mode) => {
+        this.setState({ mode: mode });
+      }).catch((error) => {
+        this.setState({ mean: 'Calculation Error' });
+      });
     });
     return prom;
   }
@@ -116,18 +116,23 @@ export default class App extends React.Component<any, any> {
   calculateMode = (dataSet: any[], length: number) => {
     const prom = new Promise((resolve, reject) => {
       try {
-        // let max = 0;
-        // let mode: any = [];
-        // dataSet = dataSet.sort((a, b) => parseFloat(a) - parseFloat(b));
-        // let joinArr = "~" + dataSet.join('~~') + "~";
-        // joinArr.replace(/(~-*\d+~)\1*/g, (a, b) => {
-        //   let m = a.length / b.length;
-        //   if (max <= m) {
-        //     if (max < m) { mode = []; max = m; }
-        //     mode.push(b.replace(/~/g, ""));
-        //   }
-        // });
-        // resolve(mode);
+        if (dataSet.length == 0){
+          return null;
+        }
+        const modeMap: any = {};
+        var maxEl = dataSet[0], maxCount = 1;
+        for (var i = 0; i < dataSet.length; i++) {
+          const el = dataSet[i];
+          if (modeMap[el] == null)
+            modeMap[el] = 1;
+          else
+            modeMap[el]++;
+          if (modeMap[el] > maxCount) {
+            maxEl = el;
+            maxCount = modeMap[el];
+          }
+        }
+        resolve(maxEl);
       } catch{
         reject(0);
       }
